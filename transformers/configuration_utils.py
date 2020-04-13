@@ -22,6 +22,12 @@ import logging
 import os
 from typing import Dict, Optional, Tuple
 
+logging.basicConfig(
+    format="%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s",
+    datefmt="%Y-%m-%d:%H:%M:%S",
+    level=logging.DEBUG,
+)
+
 from .file_utils import CONFIG_NAME, cached_path, hf_bucket_url, is_remote_url
 
 
@@ -60,7 +66,9 @@ class PretrainedConfig(object):
         self.output_attentions = kwargs.pop("output_attentions", False)
         self.output_hidden_states = kwargs.pop("output_hidden_states", False)
         self.output_past = kwargs.pop("output_past", True)  # Not used by all models
-        self.torchscript = kwargs.pop("torchscript", False)  # Only used by PyTorch models
+        self.torchscript = kwargs.pop(
+            "torchscript", False
+        )  # Only used by PyTorch models
         self.use_bfloat16 = kwargs.pop("use_bfloat16", False)
         self.pruned_heads = kwargs.pop("pruned_heads", {})
 
@@ -86,9 +94,13 @@ class PretrainedConfig(object):
         self.architectures = kwargs.pop("architectures", None)
         self.finetuning_task = kwargs.pop("finetuning_task", None)
         self.num_labels = kwargs.pop("num_labels", 2)
-        self.id2label = kwargs.pop("id2label", {i: "LABEL_{}".format(i) for i in range(self.num_labels)})
+        self.id2label = kwargs.pop(
+            "id2label", {i: "LABEL_{}".format(i) for i in range(self.num_labels)}
+        )
         self.id2label = dict((int(key), value) for key, value in self.id2label.items())
-        self.label2id = kwargs.pop("label2id", dict(zip(self.id2label.values(), self.id2label.keys())))
+        self.label2id = kwargs.pop(
+            "label2id", dict(zip(self.id2label.values(), self.id2label.keys()))
+        )
         self.label2id = dict((key, int(value)) for key, value in self.label2id.items())
 
         # Tokenizer arguments TODO: eventually tokenizer and models should share the same config
@@ -106,7 +118,9 @@ class PretrainedConfig(object):
             try:
                 setattr(self, key, value)
             except AttributeError as err:
-                logger.error("Can't set {} with value {} for {}".format(key, value, self))
+                logger.error(
+                    "Can't set {} with value {} for {}".format(key, value, self)
+                )
                 raise err
 
     @property
@@ -141,7 +155,9 @@ class PretrainedConfig(object):
         logger.info("Configuration saved in {}".format(output_config_file))
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_name_or_path, **kwargs) -> "PretrainedConfig":
+    def from_pretrained(
+        cls, pretrained_model_name_or_path, **kwargs
+    ) -> "PretrainedConfig":
         r"""
 
         Instantiate a :class:`~transformers.PretrainedConfig` (or a derived class) from a pre-trained model configuration.
@@ -196,12 +212,17 @@ class PretrainedConfig(object):
             assert unused_kwargs == {'foo': False}
 
         """
-        config_dict, kwargs = cls.get_config_dict(pretrained_model_name_or_path, **kwargs)
+        config_dict, kwargs = cls.get_config_dict(
+            pretrained_model_name_or_path, **kwargs
+        )
         return cls.from_dict(config_dict, **kwargs)
 
     @classmethod
     def get_config_dict(
-        cls, pretrained_model_name_or_path: str, pretrained_config_archive_map: Optional[Dict] = None, **kwargs
+        cls,
+        pretrained_model_name_or_path: str,
+        pretrained_config_archive_map: Optional[Dict] = None,
+        **kwargs
     ) -> Tuple[Dict, Dict]:
         """
         From a `pretrained_model_name_or_path`, resolve to a dictionary of parameters, to be used
@@ -230,10 +251,14 @@ class PretrainedConfig(object):
             config_file = pretrained_config_archive_map[pretrained_model_name_or_path]
         elif os.path.isdir(pretrained_model_name_or_path):
             config_file = os.path.join(pretrained_model_name_or_path, CONFIG_NAME)
-        elif os.path.isfile(pretrained_model_name_or_path) or is_remote_url(pretrained_model_name_or_path):
+        elif os.path.isfile(pretrained_model_name_or_path) or is_remote_url(
+            pretrained_model_name_or_path
+        ):
             config_file = pretrained_model_name_or_path
         else:
-            config_file = hf_bucket_url(pretrained_model_name_or_path, postfix=CONFIG_NAME)
+            config_file = hf_bucket_url(
+                pretrained_model_name_or_path, postfix=CONFIG_NAME
+            )
 
         try:
             # Load from URL or cache if already cached
@@ -272,14 +297,20 @@ class PretrainedConfig(object):
             msg = (
                 "Couldn't reach server at '{}' to download configuration file or "
                 "configuration file is not a valid JSON file. "
-                "Please check network or file content here: {}.".format(config_file, resolved_config_file)
+                "Please check network or file content here: {}.".format(
+                    config_file, resolved_config_file
+                )
             )
             raise EnvironmentError(msg)
 
         if resolved_config_file == config_file:
             logger.info("loading configuration file {}".format(config_file))
         else:
-            logger.info("loading configuration file {} from cache at {}".format(config_file, resolved_config_file))
+            logger.info(
+                "loading configuration file {} from cache at {}".format(
+                    config_file, resolved_config_file
+                )
+            )
 
         return config_dict, kwargs
 
@@ -304,7 +335,9 @@ class PretrainedConfig(object):
         config = cls(**config_dict)
 
         if hasattr(config, "pruned_heads"):
-            config.pruned_heads = dict((int(key), value) for key, value in config.pruned_heads.items())
+            config.pruned_heads = dict(
+                (int(key), value) for key, value in config.pruned_heads.items()
+            )
 
         # Update config with kwargs if needed
         to_remove = []

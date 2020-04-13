@@ -71,7 +71,7 @@ if _has_sklearn:
         elif task_name == "hans":
             return {"acc": simple_accuracy(preds, labels)}
         elif task_name == "dureader":
-            return acc_and_f1(preds, labels)
+            return {"acc": simple_accuracy(preds, labels)}
         else:
             raise KeyError(task_name)
 
