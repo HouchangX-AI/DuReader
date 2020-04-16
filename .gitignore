@@ -1,3 +1,4 @@
 /data
 .vscode
 /chinese_wwm_ext_pytorch
+/ERNIE_1_0_max-len-512-pytorch
