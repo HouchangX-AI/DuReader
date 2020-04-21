@@ -25,4 +25,10 @@ Depends：无法确定/分情况，主要指的是事情本身存在多种情况
 ## Modeling
 
 ### Baseline 
-仅用Answer + Bert 分类： ![image](https://user-images.githubusercontent.com/28379709/78228703-a14fcc80-7501-11ea-8eb0-1dbe34a72b8f.png) 
+仅用Answer + Bert fine-tuning： ![image](https://user-images.githubusercontent.com/28379709/78228703-a14fcc80-7501-11ea-8eb0-1dbe34a72b8f.png) 
+
+### Update
+Question + Answer + Ernie fine-tuning: ![image](https://user-images.githubusercontent.com/28379709/79554824-342b6200-80d1-11ea-9b1b-ed1322df0727.png)
+
+### Update2
+Question + Answer + Roberta + wwm: ![image](https://user-images.githubusercontent.com/28379709/79838543-c12e2e00-83e5-11ea-83ce-eb121ad0907b.png)
